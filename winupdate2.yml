@@ -1,0 +1,29 @@
+---
+- name: Windows Update és CSV riport
+  hosts: all
+  gather_facts: false
+
+  vars:
+    report_path: '\\freidc.frei.local\netlogon\reports'
+    report_file: "winupdate_{{ lookup('pipe', 'date +%F') }}.csv"
+
+  tasks:
+    - name: Windows frissítések telepítése
+      ansible.windows.win_updates:
+        category_names: '*'
+        reboot: true
+        reboot_timeout: 3600
+      register: update_result
+
+    - name: CSV fejléc létrehozása, ha még nincs fájl
+      ansible.windows.win_shell: |
+        $file = "{{ report_path }}\{{ report_file }}"
+        if (!(Test-Path $file)) {
+          "Hostname;FoundUpdates;InstalledUpdates;FailedUpdates;RebootRequired;Rebooted" | Out-File -FilePath $file -Encoding UTF8
+        }
+
+    - name: CSV sor hozzáadása
+      ansible.windows.win_shell: |
+        $file = "{{ report_path }}\{{ report_file }}"
+        $line = "{{ inventory_hostname }};{{ update_result.found_update_count | default(0) }};{{ update_result.installed_update_count | default(0) }};{{ update_result.failed_update_count | default(0) }};{{ update_result.reboot_required | default(false) }};{{ update_result.rebooted | default(false) }}"
+        Add-Content -Path $file -Value $line
