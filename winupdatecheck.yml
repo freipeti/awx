@@ -1,0 +1,13 @@
+- name: Windows Update keresés
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Elérhető frissítések keresése
+      ansible.windows.win_updates:
+        state: searched
+      register: update_result
+
+    - name: Eredmény kiírása
+      debug:
+        var: update_result
