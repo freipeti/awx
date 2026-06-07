@@ -1,0 +1,10 @@
+---
+- name: 7-Zip telepítés
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: 7-Zip telepítése
+      ansible.windows.win_package:
+        path: \\freidc.frei.local\netlogon\install\7z2601-x64.msi
+        state: present
