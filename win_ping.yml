@@ -1,0 +1,8 @@
+---
+- name: Windows kapcsolat teszt
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: WinRM ping teszt
+      ansible.windows.win_ping:
