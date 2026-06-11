@@ -1,0 +1,10 @@
+---
+- name: 7-Zip eltavolítas
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: 7-Zip eltavolitas
+      ansible.windows.win_package:
+        product_id: "{23170F69-40C1-2702-2601-000001000000}"
+        state: absent
